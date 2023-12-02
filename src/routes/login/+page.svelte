@@ -1,6 +1,13 @@
 <script>
+	import { signIn } from '@auth/sveltekit/client';
+	import { page } from '$app/stores';
+
 	import google from '$lib/images/google.png';
 	import loginBg from '$lib/images/loginBg.png';
+
+	const callbackUrl = $page.url.searchParams.get('callbackUrl') || '/';
+
+	console.log(callbackUrl);
 
 	function handleSubmit() {
 		console.log('Form has been submited');
@@ -40,7 +47,7 @@
 			<div class="divider">OR</div>
 
 			<div class="card-actions">
-				<button class="btn btn-block btn-neutral">
+				<button class="btn btn-block btn-neutral" on:click|once={() => signIn('google', { callbackUrl })}>
 					<picture>
 						<img src={google} alt="Google" class="w-5 mr-2" />
 					</picture>
