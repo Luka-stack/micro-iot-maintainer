@@ -26,10 +26,10 @@ const protectedHandle: Handle = async ({ event, resolve }) => {
 			return await resolve(event);
 		} else {
 			console.log('redirect');
-			throw redirect(303, `/auth/signin?callbackUrl=${event.url.pathname}`);
+			redirect(303, `/auth/signin?callbackUrl=${event.url.pathname}`);
 		}
 	} else if (noAuthAllowed[event.url.pathname]) {
-		throw redirect(307, '/');
+		redirect(307, '/');
 	}
 
 	console.log('retur', event.url.pathname);
