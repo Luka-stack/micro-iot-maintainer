@@ -36,6 +36,7 @@
 	"dependencies": {
 		"@auth/core": "^0.18.4",
 		"@auth/sveltekit": "^0.3.15",
+		"lucide-svelte": "^0.299.0",
 		"zod": "^3.22.4"
 	}
 }

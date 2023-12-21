@@ -1,3 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+
+@layer utilities {
+	.main-gradient {
+		@apply bg-gradient-to-r from-[#21222D] to-[#232B54];
+	}
+
+	.main-gradient-hover {
+		@apply bg-gradient-to-r hover:from-[#21222D69] hover:to-[#232B5469];
+	}
+
+	.header-gradient {
+		background: -webkit-linear-gradient(#ffffff, #172554);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.full-page {
+		height: calc(100vh - 116px);
+	}
+
+	.table-scrollbar::-webkit-scrollbar {
+		@apply w-2;
+	}
+
+	.table-scrollbar::-webkit-scrollbar-track {
+		@apply bg-transparent rounded-lg;
+	}
+
+	.table-scrollbar::-webkit-scrollbar-thumb {
+		@apply rounded-b-lg rounded-tr-lg bg-gradient-to-t from-[#21222D] to-[#232B54];
+	}
+}
