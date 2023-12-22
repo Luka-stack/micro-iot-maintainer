@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { MoreHorizontal } from 'lucide-svelte';
+
+	export let position: number;
 </script>
 
-<div class="dropdown dropdown-end">
+<div class="dropdown dropdown-end" class:dropdown-top={position > 5}>
 	<button class="btn btn-square btn-sm">
 		<MoreHorizontal class="w-5 h-5" />
 	</button>

@@ -1,8 +1,11 @@
 <script lang="ts">
+	import type { Machine } from '$lib/types';
 	import TableMenu from './TableMenu.svelte';
+
+	export let machines: Machine[] = [];
 </script>
 
-<div class="border rounded-md shadow-sm border-white/10 shadow-black">
+<div class="overflow-y-auto border rounded-md shadow-sm border-white/10 shadow-black table-scrollbar">
 	<table class="table rounded-md">
 		<thead class="main-gradient">
 			<tr class="border-none">
@@ -14,45 +17,24 @@
 				<th>Status</th>
 				<th>Last Maintenance</th>
 				<th>Next Maintenance</th>
-				<th class="rounded-tr-md" />
+				<th />
 			</tr>
 		</thead>
+
 		<tbody>
-			<tr class="border-none">
-				<th class="w-24"><img src={'machine.png'} alt="machine" class="w-full aspect-square" /></th>
-				<td>f03afd24-b055</td>
-				<td>Kawasaki</td>
-				<td>Graber</td>
-				<td>KWS-GR-1</td>
-				<td>Broken</td>
-				<td>{new Date().toLocaleDateString()}</td>
-				<td>{new Date().toLocaleDateString()}</td>
-				<td><TableMenu /></td>
-			</tr>
-
-			<tr class="border-none">
-				<th class="w-24"><img src={'machine.png'} alt="machine" class="w-full aspect-square" /></th>
-				<td>f03afd24-b055</td>
-				<td>Kawasaki</td>
-				<td>Graber</td>
-				<td>KWS-GR-1</td>
-				<td>Broken</td>
-				<td>{new Date().toLocaleDateString()}</td>
-				<td>{new Date().toLocaleDateString()}</td>
-				<td><TableMenu /></td>
-			</tr>
-
-			<tr class="border-none">
-				<th class="w-24"><img src={'machine.png'} alt="machine" class="w-full aspect-square" /></th>
-				<td>f03afd24-b055</td>
-				<td>Kawasaki</td>
-				<td>Graber</td>
-				<td>KWS-GR-1</td>
-				<td>Broken</td>
-				<td>{new Date().toLocaleDateString()}</td>
-				<td>{new Date().toLocaleDateString()}</td>
-				<td><TableMenu /></td>
-			</tr>
+			{#each machines as machine, index}
+				<tr class="border-none">
+					<th class="w-24"><img src={machine.type.imageUrl} alt="machine" class="w-full aspect-square" /></th>
+					<td>{machine.serialNumber}</td>
+					<td>{machine.producent}</td>
+					<td>{machine.type.name}</td>
+					<td>{machine.model.name}</td>
+					<td>{machine.status}</td>
+					<td>{new Date().toLocaleDateString()}</td>
+					<td>{new Date().toLocaleDateString()}</td>
+					<td><TableMenu position={index} /></td>
+				</tr>
+			{/each}
 		</tbody>
 	</table>
 </div>
