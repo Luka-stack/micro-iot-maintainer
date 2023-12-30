@@ -1,7 +1,18 @@
-export function getMachineFilters(serialNumber: string, producent: string, type: string, model: string, page: string) {
+export function getMachineFilters(
+	serialNumber: string,
+	producent: string,
+	type: string,
+	model: string,
+	page: string,
+	maintainer?: string
+) {
 	const query = new URLSearchParams();
 
 	query.set('page', page);
+
+	if (maintainer) {
+		query.set('maintainer', maintainer);
+	}
 
 	if (serialNumber) {
 		query.set('serialNumber', serialNumber);

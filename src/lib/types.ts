@@ -12,8 +12,16 @@ export type Machine = {
 		name: string;
 	};
 
+	maintainInfo: {
+		notes: string[];
+		priority: string;
+		maintenance: string;
+	};
+
 	// TODO Don't send to to maintainer
 	// assignedEmployee: string;
+
+	assignedMaintainer: string | null;
 
 	//  TODO Don't send to mainteiner
 	//  lastStatusUpdate: Date;

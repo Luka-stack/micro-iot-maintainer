@@ -13,6 +13,7 @@
 	let producent = '';
 	let type = '';
 	let model = '';
+	let maintainer = '';
 
 	let availableTypes = types;
 	let availableModels = models;
@@ -21,7 +22,8 @@
 		serialNumber = $page.url.searchParams.get('serialNumber') || '';
 		producent = $page.url.searchParams.get('producents') || '';
 		type = $page.url.searchParams.get('types') || '';
-		model = $page.url.searchParams.get('modles') || '';
+		model = $page.url.searchParams.get('models') || '';
+		maintainer = $page.url.searchParams.get('maintainer') ? 'other' : '';
 	});
 
 	function handleProducerChange() {
@@ -53,12 +55,17 @@
 	function handleSearch() {
 		const pageParam = $page.url.searchParams.get('page') || '1';
 
-		const url = getMachineFilters(serialNumber, producent, type, model, pageParam);
+		const url = getMachineFilters(serialNumber, producent, type, model, pageParam, maintainer);
 		goto(`?${url}`);
 	}
 </script>
 
 <div class="flex flex-col space-y-6">
+	<select class="w-full max-w-xs select select-md select-bordered" bind:value={maintainer}>
+		<option selected value="">My assignments</option>
+		<option value="other">Not assigned machines</option>
+	</select>
+
 	<select class="w-full max-w-xs select select-md select-bordered">
 		<option disabled selected>Status</option>
 		<option>All</option>
@@ -112,4 +119,4 @@
 	</select>
 </div>
 
-<button class="border-white/10 btn-md btn" on:click={handleSearch}>Search</button>
+<button class="border-white/10 btn-md btn btn-active" on:click={handleSearch}>Search</button>

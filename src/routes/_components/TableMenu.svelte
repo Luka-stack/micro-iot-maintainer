@@ -1,7 +1,19 @@
 <script lang="ts">
 	import { MoreHorizontal } from 'lucide-svelte';
+	import { createEventDispatcher } from 'svelte';
 
 	export let position: number;
+	export let isAssigned: boolean;
+
+	const dispatch = createEventDispatcher<{ assign: number; notes: number }>();
+
+	function dispatchAssignClick() {
+		dispatch('assign', position);
+	}
+
+	function dispatchNotesClick() {
+		dispatch('notes', position);
+	}
 </script>
 
 <div class="dropdown dropdown-end" class:dropdown-top={position > 5}>
@@ -12,7 +24,15 @@
 		<h4 class="p-2 font-medium">Actions</h4>
 		<button class="w-full p-2 text-left rounded-md hover:bg-slate-500/20">Details</button>
 		<hr class="my-2 border-white/10" />
-		<button class="w-full p-2 text-left rounded-md hover:bg-slate-500/20">Read note</button>
-		<button class="w-full p-2 text-left rounded-md hover:bg-slate-500/20">Assign to me</button>
+
+		<button on:click={dispatchNotesClick} class="w-full p-2 text-left rounded-md hover:bg-slate-500/20"
+			>Read notes</button
+		>
+
+		{#if !isAssigned}
+			<button on:click={dispatchAssignClick} class="w-full p-2 text-left rounded-md hover:bg-slate-500/20"
+				>Assign to me</button
+			>
+		{/if}
 	</div>
 </div>

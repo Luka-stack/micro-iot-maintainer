@@ -7,8 +7,6 @@
 
 	const callbackUrl = $page.url.searchParams.get('callbackUrl') || '/';
 
-	console.log(callbackUrl);
-
 	function handleSubmit() {
 		console.log('Form has been submited');
 	}
