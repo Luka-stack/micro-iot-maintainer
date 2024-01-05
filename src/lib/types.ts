@@ -1,3 +1,5 @@
+export type RepairType = 'REPAIR' | 'MAINTENANCE';
+
 export type Machine = {
 	serialNumber: string;
 	producent: string;
@@ -10,6 +12,12 @@ export type Machine = {
 	// TODO Don't need all of its data
 	model: {
 		name: string;
+		workBase: number;
+		workRange: number;
+		faultRate: number;
+		maxRate: number;
+		minRate: number;
+		defaultRate: number;
 	};
 
 	maintainInfo: {
@@ -28,6 +36,17 @@ export type Machine = {
 
 	// TODO Dont send to maintainer
 	// productionRate: number;
+};
+
+export type RepairHistory = {
+	serialNumber: string;
+	maintainer: string;
+	description: string;
+	type: RepairType;
+
+	date: string;
+	nextSchedule: string;
+	lastSchedule: string;
 };
 
 export type Pagination = {

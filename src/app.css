@@ -19,7 +19,7 @@ input[type='number'] {
 	}
 
 	.main-gradient-hover {
-		@apply bg-gradient-to-r hover:from-[#21222D69] hover:to-[#232B5469];
+		@apply bg-gradient-to-r hover:from-[#21222D] hover:to-[#232B54];
 	}
 
 	.header-gradient {

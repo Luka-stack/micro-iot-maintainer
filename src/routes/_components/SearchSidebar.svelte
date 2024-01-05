@@ -119,4 +119,4 @@
 	</select>
 </div>
 
-<button class="border-white/10 btn-md btn btn-active" on:click={handleSearch}>Search</button>
+<button class="border-white/10 btn-md btn btn-neutral" on:click={handleSearch}>Search</button>

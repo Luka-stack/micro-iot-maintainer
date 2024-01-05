@@ -4,6 +4,7 @@
 
 	import type { Machine } from '$lib/types';
 	import TableMenu from './TableMenu.svelte';
+	import NotesDialog from '../../components/dialog/NotesDialog.svelte';
 
 	export let machines: Machine[] = [];
 
@@ -110,7 +111,9 @@
 	</div>
 </dialog>
 
-<dialog class="modal" bind:this={notesDialog}>
+<NotesDialog bind:dialog={notesDialog} notes={machine?.maintainInfo.notes} serialNumber={machine?.serialNumber} />
+
+<!-- <dialog class="modal" bind:this={notesDialog}>
 	<div class="max-w-2xl modal-box">
 		<form method="dialog">
 			<button class="absolute btn btn-sm btn-circle btn-ghost right-2 top-2">✕</button>
@@ -139,7 +142,7 @@
 			</form>
 		</div>
 	</div>
-</dialog>
+</dialog> -->
 
 <style>
 	ul::-webkit-scrollbar-thumb {

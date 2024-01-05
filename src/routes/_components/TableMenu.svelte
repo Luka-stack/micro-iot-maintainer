@@ -22,17 +22,21 @@
 	</button>
 	<div class="z-50 p-2 border shadow-sm border-white/10 shadow-black dropdown-content bg-base-100 rounded-box w-52">
 		<h4 class="p-2 font-medium">Actions</h4>
-		<button class="w-full p-2 text-left rounded-md hover:bg-slate-500/20">Details</button>
+
+		<a href="machines/asdqwe-123f" data-sveltekit-preload-data>
+			<button class="w-full p-2 text-left rounded-md hover:bg-slate-500/20">Details</button>
+		</a>
+
 		<hr class="my-2 border-white/10" />
 
-		<button on:click={dispatchNotesClick} class="w-full p-2 text-left rounded-md hover:bg-slate-500/20"
-			>Read notes</button
-		>
+		<button on:click={dispatchNotesClick} class="w-full p-2 text-left rounded-md hover:bg-slate-500/20">
+			Read notes
+		</button>
 
 		{#if !isAssigned}
-			<button on:click={dispatchAssignClick} class="w-full p-2 text-left rounded-md hover:bg-slate-500/20"
-				>Assign to me</button
-			>
+			<button on:click={dispatchAssignClick} class="w-full p-2 text-left rounded-md hover:bg-slate-500/20">
+				Assign to me
+			</button>
 		{/if}
 	</div>
 </div>
