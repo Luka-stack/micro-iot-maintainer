@@ -13,6 +13,46 @@ input[type='number'] {
 	-moz-appearance: textfield;
 }
 
+.stripes-error {
+	background: repeating-linear-gradient(
+		45deg,
+		transparent,
+		transparent 12px,
+		var(--fallback-er, oklch(var(--er) / 0.5)) 13px,
+		var(--fallback-er, oklch(var(--er) / 0.5)) 13px
+	);
+}
+
+.stripes-warning {
+	background: repeating-linear-gradient(
+		45deg,
+		transparent,
+		transparent 12px,
+		var(--fallback-wa, oklch(var(--wa) / 0.5)) 13px,
+		var(--fallback-wa, oklch(var(--wa) / 0.5)) 13px
+	);
+}
+
+.stripes-success {
+	background: repeating-linear-gradient(
+		45deg,
+		transparent,
+		transparent 12px,
+		var(--fallback-su, oklch(var(--wa) / 0.5)) 13px,
+		var(--fallback-su, oklch(var(--wa) / 0.5)) 13px
+	);
+}
+
+.stripes-gray {
+	background: repeating-linear-gradient(
+		45deg,
+		transparent,
+		transparent 12px,
+		oklch(0.4455 0.037 257.28 / 0.5) 13px,
+		oklch(0.4455 0.037 257.28 / 0.5) 13px
+	);
+}
+
 @layer utilities {
 	.main-gradient {
 		@apply bg-gradient-to-r from-[#21222D] to-[#232B54];
@@ -29,7 +69,7 @@ input[type='number'] {
 	}
 
 	.full-page {
-		height: calc(100vh - 116px);
+		height: calc(100vh - 136px);
 	}
 
 	.table-scrollbar::-webkit-scrollbar {

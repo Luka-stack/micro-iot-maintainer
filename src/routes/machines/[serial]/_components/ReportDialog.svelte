@@ -42,7 +42,9 @@
 			{#if !notes || notes.length === 0}
 				<p class="text-center">No notes to show.</p>
 			{:else}
-				<ul class="p-2 rounded-md bg-base-300">
+				<ul
+					class="p-2 overflow-y-auto rounded-md bg-base-300 max-h-60 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-black/40"
+				>
 					{#each notes as note, id}
 						<li class="flex items-center p-2 space-x-3">
 							<label class="swap swap-rotate">

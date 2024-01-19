@@ -9,7 +9,6 @@ export type Machine = {
 		imageUrl: string;
 	};
 
-	// TODO Don't need all of its data
 	model: {
 		name: string;
 		workBase: number;
@@ -29,21 +28,19 @@ export type Machine = {
 	// TODO Don't send to to maintainer
 	// assignedEmployee: string;
 
+	maintenances: RepairHistory[] | null;
+
 	assignedMaintainer: string | null;
 
-	//  TODO Don't send to mainteiner
-	//  lastStatusUpdate: Date;
+	lastStatusUpdate: string;
 
-	// TODO Dont send to maintainer
-	// productionRate: number;
+	productionRate: number;
 };
 
 export type RepairHistory = {
-	serialNumber: string;
 	maintainer: string;
 	description: string;
 	type: RepairType;
-
 	date: string;
 	nextSchedule: string;
 	lastSchedule: string;

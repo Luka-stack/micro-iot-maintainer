@@ -1,31 +1,19 @@
-import type { ModelFilter, ProducentFilter, TypeFilter } from '$lib/types';
-import type { PageServerLoad } from './$types';
 import type { AuthSession } from '$lib/auth.types';
+import type { Machine } from '$lib/types';
+import type { PageServerLoad } from './$types';
 
-export const load = (async ({
-	cookies,
-	locals
-}): Promise<{
-	session: AuthSession;
-	filters: {
-		producents: ProducentFilter[];
-		types: TypeFilter[];
-		models: ModelFilter[];
-	};
-}> => {
-	const session = await locals.getSession();
-	const filters = cookies.get('filters');
+export const load = (async ({ params, locals }): Promise<{ machine: Machine }> => {
+	const session = (await locals.getSession()) as AuthSession | null;
 
-	if (!filters) {
-		const response = await fetch('http://localhost:5000/api/misc/filters');
-		const { data } = await response.json();
+	const response = await fetch(`http://localhost:5000/api/machines/${params.serial}/history`, {
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${session?.accessToken}`
+		}
+	});
+	const machine = await response.json();
 
-		cookies.set('filters', JSON.stringify(data), { path: '/' });
-
-		return { filters: data, session: session as AuthSession };
-	}
-
-	return { filters: JSON.parse(filters), session: session as AuthSession };
+	return { machine: machine.data };
 }) satisfies PageServerLoad;
 
 export const actions = {

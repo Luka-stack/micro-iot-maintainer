@@ -8,9 +8,7 @@
 	$: machines = data.machines;
 </script>
 
-<main class="flex flex-1 space-x-4 h-[500px]">
-	<!-- <button on:click={() => (machines = [])}>Half Data</button> -->
-
+<main class="flex space-x-4 full-page">
 	<section
 		class="flex flex-col justify-between h-full p-4 border rounded-md shadow-sm w-72 main-gradient shadow-black border-white/10"
 	>

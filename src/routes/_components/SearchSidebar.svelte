@@ -119,4 +119,7 @@
 	</select>
 </div>
 
-<button class="border-white/10 btn-md btn btn-neutral" on:click={handleSearch}>Search</button>
+<button
+	class="bg-blue-900 border-white/10 hover:border-white/10 btn-md btn grayscale-[40%] hover:bg-blue-900 hover:grayscale-0"
+	on:click={handleSearch}>Search</button
+>

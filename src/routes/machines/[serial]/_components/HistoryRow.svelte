@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { RepairHistory } from '$lib/types';
 	import { Check, X } from 'lucide-svelte';
+	import StatusBadge from '../../../_components/StatusBadge.svelte';
 
 	export let history: RepairHistory;
 
@@ -12,22 +13,15 @@
 
 	<div class="grid grid-cols-5 font-medium collapse-title">
 		<div class="mx-auto">
-			<div
-				class="px-2 py-1 text-xs text-center border w-28 rounded-badge"
-				class:border-error={history.type === 'REPAIR'}
-				class:stripes-repair={history.type === 'REPAIR'}
-				class:border-warning={history.type === 'MAINTENANCE'}
-				class:stripes-main={history.type === 'MAINTENANCE'}
-			>
-				{history.type}
-			</div>
+			<StatusBadge status={history.type} />
 		</div>
 		<div>Done: {new Date(history.date).toLocaleDateString()}</div>
-		<div class="flex">
+		<div class="relative">
+			On Time:
 			{#if new Date(history.date) <= new Date(history.lastSchedule)}
-				On Time: <Check class="w-5 h-5 my-auto ml-1" />
+				<Check class="absolute top-0 w-6 h-6 left-20" />
 			{:else}
-				On Time: <X class="w-5 h-5 my-auto ml-1" />
+				<X class="absolute top-0 w-6 h-6 left-20" />
 			{/if}
 		</div>
 		<div>Next: {new Date(history.nextSchedule).toLocaleDateString()}</div>
@@ -39,25 +33,3 @@
 		<p class="p-2 mt-2 border rounded-md border-white/10">{history.description}</p>
 	</div>
 </div>
-
-<style>
-	.stripes-repair {
-		background: repeating-linear-gradient(
-			45deg,
-			transparent,
-			transparent 12px,
-			var(--fallback-er, oklch(var(--er) / 0.5)) 13px,
-			var(--fallback-er, oklch(var(--er) / 0.5)) 13px
-		);
-	}
-
-	.stripes-main {
-		background: repeating-linear-gradient(
-			45deg,
-			transparent,
-			transparent 12px,
-			var(--fallback-wa, oklch(var(--wa) / 0.5)) 13px,
-			var(--fallback-wa, oklch(var(--wa) / 0.5)) 13px
-		);
-	}
-</style>
