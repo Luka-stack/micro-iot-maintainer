@@ -72,14 +72,8 @@
 	</table>
 </div>
 
-<AssignDialog bind:dialog={assignDialog} serialNumber={machine?.serialNumber} notes={machine?.maintainInfo.notes} />
+<AssignDialog bind:dialog={assignDialog} serialNumber={machine?.serialNumber} defects={machine?.maintainInfo.defects} />
 
-<NotesDialog bind:dialog={notesDialog} notes={machine?.maintainInfo.notes} serialNumber={machine?.serialNumber} />
+<NotesDialog bind:dialog={notesDialog} defects={machine?.maintainInfo.defects} serialNumber={machine?.serialNumber} />
 
 <UnassignDialog bind:dialog={unassignDialog} serialNumber={machine?.serialNumber} />
-
-<style>
-	ul::-webkit-scrollbar-thumb {
-		border-radius: 0.375rem;
-	}
-</style>

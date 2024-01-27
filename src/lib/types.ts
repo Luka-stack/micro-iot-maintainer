@@ -20,7 +20,7 @@ export type Machine = {
 	};
 
 	maintainInfo: {
-		notes: string[];
+		defects: string[];
 		priority: string;
 		maintenance: string;
 	};
@@ -42,8 +42,8 @@ export type RepairHistory = {
 	description: string;
 	type: RepairType;
 	date: string;
-	nextSchedule: string;
-	lastSchedule: string;
+	scheduled: string;
+	nextMaintenance: string;
 };
 
 export type Pagination = {

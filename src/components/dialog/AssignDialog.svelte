@@ -4,7 +4,7 @@
 
 	export let dialog: HTMLDialogElement;
 	export let serialNumber: string | undefined;
-	export let notes: string[] | undefined;
+	export let defects: string[] | undefined;
 </script>
 
 <dialog class="modal" bind:this={dialog}>
@@ -15,15 +15,15 @@
 		<h3 class="mb-2 text-lg font-bold">Assign machine {serialNumber} to me!</h3>
 		<p class="">You are committing to fixing a machine by assigning it to yourself.</p>
 
-		{#if notes && notes.length > 0}
+		{#if defects && defects.length > 0}
 			<p class="">See notes below left by the machine operator for more information:</p>
 			<ul
 				class="flex flex-col p-4 mt-4 space-y-2 overflow-y-auto rounded-md shadow-sm bg-black/20 max-h-40 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-black/40"
 			>
-				{#each notes as note}
+				{#each defects as defect}
 					<li class="flex items-center space-x-2 text-sm">
 						<Diamond class="w-3 h-3" />
-						<p>{note}</p>
+						<p>{defect}</p>
 					</li>
 				{/each}
 			</ul>
@@ -53,3 +53,9 @@
 		</div>
 	</div>
 </dialog>
+
+<style>
+	ul::-webkit-scrollbar-thumb {
+		border-radius: 0.375rem;
+	}
+</style>

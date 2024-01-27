@@ -20,6 +20,7 @@
 	import HistoryTable from './_components/HistoryTable.svelte';
 
 	export let data;
+	export let form: any;
 
 	const statusHours = getStatusTime(data.machine.lastStatusUpdate);
 
@@ -134,20 +135,21 @@
 	<ReportDialog
 		bind:dialog={workDialog}
 		serialNumber={data.machine.serialNumber}
-		notes={data.machine.maintainInfo.notes}
+		defects={data.machine.maintainInfo.defects}
+		errors={form}
 	/>
 {/if}
 
 <NotesDialog
 	bind:dialog={notesDialog}
 	serialNumber={data.machine.serialNumber}
-	notes={data.machine.maintainInfo.notes}
+	defects={data.machine.maintainInfo.defects}
 />
 
 <AssignDialog
 	bind:dialog={assignDialog}
 	serialNumber={data.machine.serialNumber}
-	notes={data.machine.maintainInfo.notes}
+	defects={data.machine.maintainInfo.defects}
 />
 
 <UnassignDialog bind:dialog={unassignDialog} serialNumber={data.machine.serialNumber} />

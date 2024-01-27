@@ -6,6 +6,8 @@
 	export let history: RepairHistory;
 
 	let checked = false;
+
+	$: console.log(history.scheduled);
 </script>
 
 <div class="rounded-md collapse collapse-arrow">
@@ -18,13 +20,13 @@
 		<div>Done: {new Date(history.date).toLocaleDateString()}</div>
 		<div class="relative">
 			On Time:
-			{#if new Date(history.date) <= new Date(history.lastSchedule)}
+			{#if new Date(history.date) <= new Date(history.nextMaintenance)}
 				<Check class="absolute top-0 w-6 h-6 left-20" />
 			{:else}
 				<X class="absolute top-0 w-6 h-6 left-20" />
 			{/if}
 		</div>
-		<div>Next: {new Date(history.nextSchedule).toLocaleDateString()}</div>
+		<div>Next: {new Date(history.scheduled).toLocaleDateString()}</div>
 		<div>Maintainer: {history.maintainer}</div>
 	</div>
 

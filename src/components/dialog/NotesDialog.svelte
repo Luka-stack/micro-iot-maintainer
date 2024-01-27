@@ -3,7 +3,7 @@
 
 	export let dialog: HTMLDialogElement;
 	export let serialNumber: string | undefined;
-	export let notes: string[] | undefined;
+	export let defects: string[] | undefined;
 </script>
 
 <dialog class="modal" bind:this={dialog}>
@@ -13,15 +13,15 @@
 		</form>
 		<h3 class="text-lg font-bold">Machine {serialNumber} operator's notes</h3>
 
-		{#if notes && notes.length > 0}
+		{#if defects && defects.length > 0}
 			<p>See notes below left by its operator for more information:</p>
 			<ul
 				class="flex flex-col p-4 mt-4 space-y-2 overflow-y-auto rounded-md shadow-sm bg-black/20 max-h-60 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-black/40"
 			>
-				{#each notes as note}
+				{#each defects as defect}
 					<li class="flex items-center space-x-4 text-sm">
 						<Diamond class="w-3 h-3" />
-						<p>{note}</p>
+						<p>{defect}</p>
 					</li>
 				{/each}
 			</ul>
@@ -36,3 +36,9 @@
 		</div>
 	</div>
 </dialog>
+
+<style>
+	ul::-webkit-scrollbar-thumb {
+		border-radius: 0.375rem;
+	}
+</style>
