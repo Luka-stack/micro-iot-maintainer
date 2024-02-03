@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { signOut } from '@auth/sveltekit/client';
+	import { Toaster } from 'svelte-sonner';
 
 	import '../app.css';
 	import logo from '$lib/images/logo.png';
 
 	export let data;
 </script>
+
+<Toaster richColors theme="dark" />
 
 <div class="flex flex-col p-4 pt-0">
 	<header class="flex items-center justify-between py-4">

@@ -4,8 +4,6 @@
 	import BasePagination from '$lib/components/BasePagination.svelte';
 
 	export let data;
-
-	$: machines = data.machines;
 </script>
 
 <main class="flex space-x-4 full-page">
@@ -16,7 +14,7 @@
 	</section>
 
 	<section class="flex flex-col flex-1 space-y-4">
-		<MachineTable {machines} />
+		<MachineTable machines={data.machines} />
 		<BasePagination pagination={data.pagination} />
 	</section>
 </main>

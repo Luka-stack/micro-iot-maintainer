@@ -39,6 +39,7 @@
 		"@auth/sveltekit": "^0.3.15",
 		"clsx": "^2.1.0",
 		"lucide-svelte": "^0.299.0",
+		"svelte-sonner": "^0.3.11",
 		"zod": "^3.22.4"
 	}
 }

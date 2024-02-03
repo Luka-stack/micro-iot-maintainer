@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Diamond } from 'lucide-svelte';
 	import { enhance } from '$app/forms';
+	import { toast } from 'svelte-sonner';
 
 	export let dialog: HTMLDialogElement;
 	export let serialNumber: string | undefined;
@@ -40,8 +41,14 @@
 				method="post"
 				action="?/assign"
 				use:enhance={() => {
-					return async ({ update }) => {
+					return async ({ result, update }) => {
 						await update();
+
+						if (result.status !== 200) {
+							// @ts-ignore
+							toast.error(result.data.error);
+						}
+
 						dialog.close();
 					};
 				}}

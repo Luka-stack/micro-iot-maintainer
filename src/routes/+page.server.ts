@@ -1,6 +1,8 @@
-import type { ModelFilter, ProducentFilter, TypeFilter } from '$lib/types';
-import type { PageServerLoad } from './$types';
+import { fail } from '@sveltejs/kit';
 import type { AuthSession } from '$lib/auth.types';
+import type { ModelFilter, ProducentFilter, TypeFilter } from '$lib/types';
+
+import type { PageServerLoad } from './$types';
 
 export const load = (async ({
 	cookies,
@@ -13,11 +15,16 @@ export const load = (async ({
 		models: ModelFilter[];
 	};
 }> => {
-	const session = await locals.getSession();
+	const session = (await locals.getSession()) as AuthSession;
 	const filters = cookies.get('filters');
 
-	if (!filters) {
-		const response = await fetch('http://localhost:5000/api/misc/filters');
+	if (filters === undefined) {
+		const response = await fetch('http://localhost:5000/api/misc/filters', {
+			headers: {
+				Authorization: `Bearer ${session?.accessToken}`
+			}
+		});
+
 		const { data } = await response.json();
 
 		cookies.set('filters', JSON.stringify(data), { path: '/' });
@@ -33,12 +40,18 @@ export const actions = {
 		const data = await request.formData();
 		const session = (await locals.getSession()) as AuthSession;
 
-		await fetch(`http://localhost:5000/api/machines/${data.get('machine')}/assign-maintainer`, {
+		const response = await fetch(`http://localhost:5000/api/machines/${data.get('machine')}/assign-maintainer`, {
 			method: 'POST',
 			headers: {
 				Authorization: `Bearer ${session?.accessToken}`
 			}
 		});
+
+		if (response.status !== 200) {
+			const error = await response.json();
+
+			return fail(error.statusCode, { error: error.message });
+		}
 	},
 	unassign: async ({ request, locals }) => {
 		const data = await request.formData();

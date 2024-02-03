@@ -26,6 +26,7 @@ export const load = (async ({ fetch, data, url }): Promise<ReturnData> => {
 			}
 		}
 	);
+
 	const machines = await response.json();
 
 	return { machines: machines.data, pagination: machines.meta, filters: data.filters };
