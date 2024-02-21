@@ -1,7 +1,7 @@
 import type { AuthSession } from '$lib/auth.types';
 import type { Machine } from '$lib/types';
 import { fail } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from '../../../$types';
 
 export const load = (async ({ params, locals }): Promise<{ machine: Machine }> => {
 	const session = (await locals.getSession()) as AuthSession | null;

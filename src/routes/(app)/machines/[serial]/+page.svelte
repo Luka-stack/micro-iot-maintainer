@@ -12,12 +12,12 @@
 	} from 'lucide-svelte';
 
 	import { getStatusTime } from '$lib/helpers/dates';
-	import NotesDialog from '../../../components/dialog/NotesDialog.svelte';
 	import ReportDialog from './_components/ReportDialog.svelte';
-	import SpecificationDialog from '../../../components/dialog/SpecificationDialog.svelte';
-	import AssignDialog from '../../../components/dialog/AssignDialog.svelte';
-	import UnassignDialog from '../../../components/dialog/UnassignDialog.svelte';
 	import HistoryTable from './_components/HistoryTable.svelte';
+	import SpecificationDialog from '../../../../components/dialog/SpecificationDialog.svelte';
+	import NotesDialog from '../../../../components/dialog/NotesDialog.svelte';
+	import AssignDialog from '../../../../components/dialog/AssignDialog.svelte';
+	import UnassignDialog from '../../../../components/dialog/UnassignDialog.svelte';
 
 	export let data;
 	export let form: any;

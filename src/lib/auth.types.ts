@@ -4,6 +4,7 @@ export type AuthUser = {
 		email: string;
 		role: string;
 	};
+	appKey?: string;
 	accessToken?: string;
 	newUser?: boolean;
 };
@@ -15,4 +16,5 @@ export type AuthSession = {
 		role: string;
 	};
 	accessToken?: string;
+	appKey?: string;
 };

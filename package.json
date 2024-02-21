@@ -35,8 +35,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@auth/core": "^0.18.4",
-		"@auth/sveltekit": "^0.3.15",
+		"@auth/sveltekit": "^0.13.0",
 		"clsx": "^2.1.0",
 		"lucide-svelte": "^0.299.0",
 		"svelte-sonner": "^0.3.11",

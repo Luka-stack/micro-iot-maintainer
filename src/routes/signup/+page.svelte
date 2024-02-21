@@ -1,8 +1,11 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import type { ActionData } from './$types';
 
+	import '../../app.css';
+
 	import loginBg from '$lib/images/loginBg.png';
+	import { goto } from '$app/navigation';
 
 	export let form: ActionData;
 	let pending = false;
@@ -10,9 +13,14 @@
 	function logIn() {
 		pending = true;
 
-		return async ({ update }: any) => {
+		return async ({ result }: any) => {
 			pending = false;
-			await update();
+
+			if (result.type === 'success') {
+				goto('/login');
+			} else {
+				await applyAction(result);
+			}
 		};
 	}
 </script>
@@ -32,6 +40,12 @@
 					<h2 class="w-full text-base italic text-center text-slate-400">Register as a new maintainer</h2>
 				</div>
 			</div>
+
+			{#if form?.general}
+				<div class="mb-2 border alert border-error bg-error/10 text-error">
+					<p>{form.general}</p>
+				</div>
+			{/if}
 
 			<form method="post" use:enhance={logIn} class="grid gap-5">
 				<div class="w-full max-w-xs form-control">
@@ -89,7 +103,7 @@
 				<div class="flex items-baseline justify-center w-full space-x-1">
 					<span class="text-sm"> Aleady have an account? </span>
 					<a
-						href="/auth/signin"
+						href="/login"
 						class="text-sm text-blue-500 underline transition-all cursor-pointer hover:scale-105 underline-offset-2"
 					>
 						Log in here!

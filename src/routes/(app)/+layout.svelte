@@ -2,7 +2,7 @@
 	import { signOut } from '@auth/sveltekit/client';
 	import { Toaster } from 'svelte-sonner';
 
-	import '../app.css';
+	import '../../app.css';
 	import logo from '$lib/images/logo.png';
 
 	export let data;

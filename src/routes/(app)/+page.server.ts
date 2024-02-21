@@ -1,8 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import type { AuthSession } from '$lib/auth.types';
+import type { PageServerLoad } from '../$types';
 import type { ModelFilter, ProducentFilter, TypeFilter } from '$lib/types';
-
-import type { PageServerLoad } from './$types';
 
 export const load = (async ({
 	cookies,

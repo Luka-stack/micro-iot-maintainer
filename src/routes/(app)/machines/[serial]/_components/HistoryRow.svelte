@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { RepairHistory } from '$lib/types';
 	import { Check, X } from 'lucide-svelte';
-	import StatusBadge from '../../../_components/StatusBadge.svelte';
+	import StatusBadge from '../../../../../components/StatusBadge.svelte';
 
 	export let history: RepairHistory;
 

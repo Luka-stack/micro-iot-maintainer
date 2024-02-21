@@ -1,5 +1,5 @@
 import type { Machine, ModelFilter, Pagination, ProducentFilter, TypeFilter } from '$lib/types';
-import type { PageLoad } from './$types';
+import type { PageLoad } from '../$types';
 
 type ReturnData = {
 	machines: Machine[];
