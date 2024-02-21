@@ -14,6 +14,10 @@
 	let type = '';
 	let model = '';
 	let maintainer = '';
+	let priority = '';
+	let status = '';
+	let nextMaintenance = '';
+	let previousMaintenance = '';
 
 	let availableTypes = types;
 	let availableModels = models;
@@ -24,6 +28,8 @@
 		type = $page.url.searchParams.get('types') || '';
 		model = $page.url.searchParams.get('models') || '';
 		maintainer = $page.url.searchParams.get('maintainer') ? 'other' : '';
+		priority = $page.url.searchParams.get('priority')?.toUpperCase() || '';
+		status = $page.url.searchParams.get('status')?.toUpperCase() || '';
 	});
 
 	function handleProducerChange() {
@@ -55,8 +61,21 @@
 	function handleSearch() {
 		const pageParam = $page.url.searchParams.get('page') || '1';
 
-		const url = getMachineFilters(serialNumber, producent, type, model, pageParam, maintainer);
+		const url = getMachineFilters(serialNumber, producent, type, model, status, priority, pageParam, maintainer);
 		goto(`?${url}`);
+	}
+
+	function validator(_node: HTMLInputElement, _: string) {
+		return {
+			update(uvalue: any) {
+				if (isNaN(uvalue)) {
+					nextMaintenance = previousMaintenance;
+				} else {
+					nextMaintenance = uvalue;
+					previousMaintenance = uvalue;
+				}
+			}
+		};
 	}
 </script>
 
@@ -66,20 +85,28 @@
 		<option value="other">Not assigned machines</option>
 	</select>
 
-	<select class="w-full max-w-xs select select-md select-bordered">
+	<select class="w-full max-w-xs select select-md select-bordered" bind:value={status}>
 		<option disabled selected>Status</option>
-		<option>All</option>
-		<option>Broken</option>
-		<option>Not broken</option>
+		<option value="">All</option>
+		<option value="BROKEN">Broken</option>
+		<option value="MAINTENANCE">Maintenance</option>
 	</select>
 
-	<select class="w-full max-w-xs select select-md select-bordered">
+	<select class="w-full max-w-xs select select-md select-bordered" bind:value={priority}>
 		<option disabled selected>Priority</option>
-		<option>All</option>
-		<option>High</option>
-		<option>Normal</option>
-		<option>Low</option>
+		<option value="">All</option>
+		<option value="HIGH">High</option>
+		<option value="NORMAL">Normal</option>
+		<option value="LOW">Low</option>
 	</select>
+
+	<input
+		use:validator={nextMaintenance}
+		bind:value={nextMaintenance}
+		type="text"
+		class="w-full max-w-xs input input-bordered input-md"
+		placeholder="Next maintenance"
+	/>
 
 	<div class="text-sm divider">Advanced search</div>
 

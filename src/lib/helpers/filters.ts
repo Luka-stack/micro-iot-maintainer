@@ -3,8 +3,10 @@ export function getMachineFilters(
 	producent: string,
 	type: string,
 	model: string,
+	status: string,
+	priority: string,
 	page: string,
-	maintainer?: string
+	maintainer: string
 ) {
 	const query = new URLSearchParams();
 
@@ -28,6 +30,14 @@ export function getMachineFilters(
 
 	if (model) {
 		query.set('models', model);
+	}
+
+	if (priority) {
+		query.set('priority', priority);
+	}
+
+	if (status) {
+		query.set('status', status);
 	}
 
 	return query.toString();
