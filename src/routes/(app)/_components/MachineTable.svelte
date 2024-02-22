@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { Machine } from '$lib/types';
 	import TableMenu from './TableMenu.svelte';
-	import NotesDialog from '../../components/dialog/NotesDialog.svelte';
-	import StatusBadge from '../../components/StatusBadge.svelte';
-	import UnassignDialog from '../../components/dialog/UnassignDialog.svelte';
-	import AssignDialog from '../../components/dialog/AssignDialog.svelte';
+	import NotesDialog from '../../../components/dialog/NotesDialog.svelte';
+	import StatusBadge from '../../../components/StatusBadge.svelte';
+	import UnassignDialog from '../../../components/dialog/UnassignDialog.svelte';
+	import AssignDialog from '../../../components/dialog/AssignDialog.svelte';
 	import PriorityIcon from './PriorityIcon.svelte';
 
 	export let machines: Machine[] = [];

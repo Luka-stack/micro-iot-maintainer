@@ -28,7 +28,7 @@ export type Machine = {
 	// TODO Don't send to to maintainer
 	// assignedEmployee: string;
 
-	maintenances: RepairHistory[] | null;
+	// maintenances: RepairHistory[] | null;
 
 	assignedMaintainer: string | null;
 

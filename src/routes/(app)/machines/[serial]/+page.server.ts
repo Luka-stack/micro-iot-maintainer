@@ -1,26 +1,53 @@
 import type { AuthSession } from '$lib/auth.types';
-import type { Machine } from '$lib/types';
-import { fail } from '@sveltejs/kit';
-import type { PageServerLoad } from '../../../$types';
+import type { Machine, RepairHistory } from '$lib/types';
+import { error, fail } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
 
-export const load = (async ({ params, locals }): Promise<{ machine: Machine }> => {
-	const session = (await locals.getSession()) as AuthSession | null;
+async function loadHistory(serial: string, token: string): Promise<RepairHistory[]> {
+	const response = await fetch(`http://localhost:5000/api/machines/${serial}/history`, {
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`
+		}
+	});
 
-	const response = await fetch(`http://localhost:5000/api/machines/${params.serial}/history`, {
+	if (!response.ok) {
+		return [];
+	}
+
+	const history = await response.json();
+	return history.data;
+}
+
+export const load = (async ({ params, locals }): Promise<{ machine: Machine; history: Promise<RepairHistory[]> }> => {
+	const session = (await locals.auth()) as AuthSession | null;
+
+	const history = loadHistory(params.serial, session?.accessToken ?? '');
+
+	const response = await fetch(`http://localhost:5000/api/machines/${params.serial}`, {
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: `Bearer ${session?.accessToken}`
 		}
 	});
+
+	if (response.status === 404 || response.status === 401) {
+		error(404, 'Not found');
+	}
+
+	if (!response.ok) {
+		error(500, 'Failed to fetch machine');
+	}
+
 	const machine = await response.json();
 
-	return { machine: machine.data };
+	return { machine: machine.data, history };
 }) satisfies PageServerLoad;
 
 export const actions = {
 	assign: async ({ request, locals }) => {
 		const data = await request.formData();
-		const session = (await locals.getSession()) as AuthSession;
+		const session = (await locals.auth()) as AuthSession;
 
 		await fetch(`http://localhost:5000/api/machines/${data.get('machine')}/assign-maintainer`, {
 			method: 'POST',
@@ -31,7 +58,7 @@ export const actions = {
 	},
 	unassign: async ({ request, locals }) => {
 		const data = await request.formData();
-		const session = (await locals.getSession()) as AuthSession;
+		const session = (await locals.auth()) as AuthSession;
 
 		await fetch(`http://localhost:5000/api/machines/${data.get('machine')}/unassign-maintainer`, {
 			method: 'POST',
@@ -41,7 +68,7 @@ export const actions = {
 		});
 	},
 	report: async ({ request, locals }) => {
-		const [data, session] = await Promise.all([request.formData(), locals.getSession() as AuthSession]);
+		const [data, session] = await Promise.all([request.formData(), locals.auth() as AuthSession]);
 		const next = data.get('nextMaintenance') ?? '';
 		const desc = data.get('description') ?? '';
 		const defects = JSON.parse(data.get('defects')?.toString() ?? '[]');

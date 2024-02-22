@@ -129,7 +129,20 @@
 	</div>
 </div>
 
-<HistoryTable historyData={data.machine.maintenances ? data.machine.maintenances : []} />
+{#await data.history}
+	<div class="mt-10 overflow-hidden border divide-y rounded-md shadow-sm border-white/10 shadow-black divide-white/10">
+		<div class="flex items-center justify-between p-4">
+			<div class="w-64 h-8 skeleton" />
+			<div class="flex items-center space-x-3">
+				<div class="w-40 h-8 skeleton" />
+				<div class="w-40 h-8 skeleton" />
+				<div class="w-40 h-8 skeleton" />
+			</div>
+		</div>
+	</div>
+{:then history}
+	<HistoryTable historyData={history} />
+{/await}
 
 {#if data.machine.assignedMaintainer === data.user?.email}
 	<ReportDialog

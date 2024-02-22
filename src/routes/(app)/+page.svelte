@@ -1,7 +1,7 @@
 <script lang="ts">
 	import BasePagination from '$lib/components/BasePagination.svelte';
-	import MachineTable from '../_components/MachineTable.svelte';
-	import SearchSidebar from '../_components/SearchSidebar.svelte';
+	import MachineTable from './_components/MachineTable.svelte';
+	import SearchSidebar from './_components/SearchSidebar.svelte';
 
 	export let data;
 </script>
