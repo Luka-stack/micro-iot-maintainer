@@ -1,46 +1,29 @@
-import { SvelteKitAuth } from '@auth/sveltekit';
-import Google from '@auth/core/providers/google';
-import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '$env/static/private';
 import { sequence } from '@sveltejs/kit/hooks';
+import type { AuthSession } from '$lib/auth.types';
+import { handle as AuthHandle } from './auth';
 import { redirect, type Handle } from '@sveltejs/kit';
+import { APP_KEY, ADMIN_APP_KEY } from '$env/static/private';
 
 const noAuthAllowed: Record<string, string> = {
-	// '/auth/signin': '/login',
-	'/login': '/login'
+	'/login': '/login',
+	'/signup': '/signup'
 };
 
-const authOptions = SvelteKitAuth({
-	providers: [Google({ clientId: GOOGLE_CLIENT_ID, clientSecret: GOOGLE_CLIENT_SECRET })],
-	pages: {
-		signIn: '/login'
-	}
-});
-
 const protectedHandle: Handle = async ({ event, resolve }) => {
-	const session = await event.locals.getSession();
+	const session = await event.locals.auth();
+	const canAccess = (session as AuthSession)?.appKey === APP_KEY || (session as AuthSession)?.appKey === ADMIN_APP_KEY;
 
-	if (!session) {
-		console.log('there is no session');
-
+	if (!session || !canAccess) {
 		if (noAuthAllowed[event.url.pathname]) {
 			return await resolve(event);
 		} else {
-			console.log('redirect');
-			redirect(303, `/auth/signin?callbackUrl=${event.url.pathname}`);
+			redirect(303, `/login?callbackUrl=${event.url.pathname}`);
 		}
 	} else if (noAuthAllowed[event.url.pathname]) {
 		redirect(307, '/');
 	}
 
-	console.log('retur', event.url.pathname);
-
 	return await resolve(event);
 };
 
-export const handle = sequence(authOptions, protectedHandle);
-
-// export const handle: Handle = async ({ event, resolve }) => {
-// 	if (event.url.pathname === '/') throw redirect(301, '/login');
-
-// 	return await resolve(event);
-// };
+export const handle = sequence(AuthHandle, protectedHandle);

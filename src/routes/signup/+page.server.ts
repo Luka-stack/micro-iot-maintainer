@@ -1,6 +1,9 @@
 import { ZodError, z } from 'zod';
-import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
+import type { Actions } from './$types';
+import { AuthEndpoints } from '$lib/apis/endpoints';
+import { APP_KEY } from '$env/static/private';
+import { getErrorMessage } from '$lib/helpers/errors';
 
 const schema = z
 	.object({
@@ -17,17 +20,33 @@ const schema = z
 export const actions = {
 	default: async ({ request }) => {
 		const formData = await request.formData();
-
-		await new Promise((res) => setTimeout(res, 5000));
-
 		try {
-			schema.parse({
+			const data = schema.parse({
 				email: formData.get('email'),
 				displayName: formData.get('displayName'),
 				password: formData.get('password'),
-				confirmedPassword: formData.get('confirmedPassword'),
-				role: 'maintainer'
+				confirmedPassword: formData.get('confirmedPassword')
 			});
+
+			const response = await fetch(AuthEndpoints.signup, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					email: data.email,
+					displayName: data.displayName,
+					password: data.password,
+					appKey: APP_KEY
+				})
+			});
+
+			if (!response.ok) {
+				const error = await response.json();
+				return fail(400, {
+					general: getErrorMessage(error)
+				});
+			}
 		} catch (error) {
 			if (error instanceof ZodError) {
 				const errors = error.formErrors.fieldErrors;

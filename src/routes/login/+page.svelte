@@ -1,16 +1,50 @@
-<script>
+<script lang="ts">
 	import { signIn } from '@auth/sveltekit/client';
 	import { page } from '$app/stores';
+	import { ZodError, z } from 'zod';
+
+	import '../../app.css';
 
 	import google from '$lib/images/google.png';
 	import loginBg from '$lib/images/loginBg.png';
 
 	const callbackUrl = $page.url.searchParams.get('callbackUrl') || '/';
+	const authError = $page.url.searchParams.get('error');
+	let pending = false;
+	let errors: { email?: string; password?: string } = {};
 
-	console.log(callbackUrl);
+	async function handleSubmit(event: { currentTarget: EventTarget & HTMLFormElement }) {
+		pending = true;
 
-	function handleSubmit() {
-		console.log('Form has been submited');
+		try {
+			const data = new FormData(event.currentTarget);
+			const payload = z
+				.object({
+					email: z.string().email('Must be a valid email'),
+					password: z.string().min(1, 'Password is required')
+				})
+				.parse({
+					email: data.get('email') as string,
+					password: data.get('password') as string
+				});
+
+			signIn('credentials', {
+				email: payload.email,
+				password: payload.password,
+				callbackUrl
+			});
+		} catch (error) {
+			if (error instanceof ZodError) {
+				const zodErrors = error.formErrors.fieldErrors;
+
+				errors = {
+					email: zodErrors.email?.join(),
+					password: zodErrors.password?.join()
+				};
+			}
+
+			pending = false;
+		}
 	}
 </script>
 
@@ -27,9 +61,22 @@
 				<h2 class="w-full text-2xl italic text-center">Welcome to IoT Fox Mainatiners</h2>
 			</div>
 
-			<form on:submit|preventDefault={handleSubmit} class="grid gap-5">
+			{#if authError}
+				<div class="mb-2 border alert border-error bg-error/10 text-error">
+					<p>Wrong credentials!</p>
+				</div>
+			{/if}
+
+			<form on:submit|preventDefault={handleSubmit} class="grid gap-5" method="post">
 				<div class="w-full max-w-xs form-control">
-					<input name="email" type="email" placeholder="Type email..." class="w-full max-w-xs input input-bordered" />
+					<input
+						name="email"
+						type="email"
+						placeholder="Type email..."
+						class="w-full max-w-xs input input-bordered"
+						class:input-error={errors?.email}
+					/>
+					<p class="text-sm text-error">{errors?.email || ''}</p>
 				</div>
 
 				<div class="w-full max-w-xs form-control">
@@ -38,10 +85,18 @@
 						type="password"
 						placeholder="Type password..."
 						class="w-full max-w-xs input input-bordered"
+						class:input-error={errors?.password}
 					/>
+					<p class="text-sm text-error">{errors?.password || ''}</p>
 				</div>
 
-				<button class="btn btn-block btn-neutral" type="submit"> Log In </button>
+				<button class="btn btn-block btn-neutral disabled:bg-neutral" type="submit" disabled={pending}>
+					{#if !pending}
+						Log In
+					{:else}
+						<span class="loading loading-spinner loading-md"></span>
+					{/if}
+				</button>
 			</form>
 
 			<div class="divider">OR</div>
@@ -57,7 +112,7 @@
 				<div class="flex items-baseline justify-center w-full space-x-1">
 					<span class="text-sm"> You don't have account? </span>
 					<a
-						href="/auth/signup"
+						href="/signup"
 						class="text-sm text-blue-500 underline transition-all cursor-pointer hover:scale-105 underline-offset-2"
 					>
 						Register for free!

@@ -1,3 +1,86 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+
+.stripes-error {
+	background: repeating-linear-gradient(
+		45deg,
+		transparent,
+		transparent 12px,
+		var(--fallback-er, oklch(var(--er) / 0.5)) 13px,
+		var(--fallback-er, oklch(var(--er) / 0.5)) 13px
+	);
+}
+
+.stripes-warning {
+	background: repeating-linear-gradient(
+		45deg,
+		transparent,
+		transparent 12px,
+		var(--fallback-wa, oklch(var(--wa) / 0.5)) 13px,
+		var(--fallback-wa, oklch(var(--wa) / 0.5)) 13px
+	);
+}
+
+.stripes-success {
+	background: repeating-linear-gradient(
+		45deg,
+		transparent,
+		transparent 12px,
+		var(--fallback-su, oklch(var(--wa) / 0.5)) 13px,
+		var(--fallback-su, oklch(var(--wa) / 0.5)) 13px
+	);
+}
+
+.stripes-gray {
+	background: repeating-linear-gradient(
+		45deg,
+		transparent,
+		transparent 12px,
+		oklch(0.4455 0.037 257.28 / 0.5) 13px,
+		oklch(0.4455 0.037 257.28 / 0.5) 13px
+	);
+}
+
+@layer utilities {
+	.main-gradient {
+		@apply bg-gradient-to-r from-[#21222D] to-[#232B54];
+	}
+
+	.main-gradient-hover {
+		@apply bg-gradient-to-r hover:from-[#21222D] hover:to-[#232B54];
+	}
+
+	.header-gradient {
+		background: -webkit-linear-gradient(#ffffff, #172554);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.full-page {
+		height: calc(100vh - 136px);
+	}
+
+	.table-scrollbar::-webkit-scrollbar {
+		@apply w-2;
+	}
+
+	.table-scrollbar::-webkit-scrollbar-track {
+		@apply bg-transparent rounded-lg;
+	}
+
+	.table-scrollbar::-webkit-scrollbar-thumb {
+		@apply rounded-b-lg rounded-tr-lg bg-gradient-to-t from-[#21222D] to-[#232B54];
+	}
+}
