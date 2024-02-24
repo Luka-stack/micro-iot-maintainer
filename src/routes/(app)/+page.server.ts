@@ -1,66 +1,76 @@
 import { fail } from '@sveltejs/kit';
+
+import { getRequest, postRequest } from '$lib/fetch-client';
+import { MachineEndpoints, MiscEndpoints } from '$lib/apis/endpoints';
+
 import type { AuthSession } from '$lib/auth.types';
 import type { PageServerLoad } from './$types';
-import type { ModelFilter, ProducentFilter, TypeFilter } from '$lib/types';
+import type { MachineFilters } from '$lib/types';
 
 export const load = (async ({
 	cookies,
-	locals
+	locals,
+	fetch
 }): Promise<{
 	session: AuthSession;
-	filters: {
-		producents: ProducentFilter[];
-		types: TypeFilter[];
-		models: ModelFilter[];
-	};
+	filters: MachineFilters;
 }> => {
-	const session = (await locals.getSession()) as AuthSession;
+	const session = (await locals.auth()) as AuthSession;
 	const filters = cookies.get('filters');
 
 	if (filters === undefined) {
-		const response = await fetch('http://localhost:5000/api/misc/filters', {
-			headers: {
-				Authorization: `Bearer ${session?.accessToken}`
-			}
-		});
+		const response = await getRequest<{ data: MachineFilters }>(fetch, MiscEndpoints.filters, session?.accessToken);
 
-		const { data } = await response.json();
+		if (response.hasError) {
+			return {
+				filters: {
+					producents: [],
+					types: [],
+					models: []
+				},
+				session: session as AuthSession
+			};
+		}
 
-		cookies.set('filters', JSON.stringify(data), { path: '/' });
-
-		return { filters: data, session: session as AuthSession };
+		cookies.set('filters', JSON.stringify(response.fetchedData!.data), { path: '/' });
+		return {
+			filters: response.fetchedData!.data,
+			session: session as AuthSession
+		};
 	}
 
 	return { filters: JSON.parse(filters), session: session as AuthSession };
 }) satisfies PageServerLoad;
 
 export const actions = {
-	assign: async ({ request, locals }) => {
+	assign: async ({ request, locals, fetch }) => {
 		const data = await request.formData();
-		const session = (await locals.getSession()) as AuthSession;
+		const session = (await locals.auth()) as AuthSession;
 
-		const response = await fetch(`http://localhost:5000/api/machines/${data.get('machine')}/assign-maintainer`, {
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${session?.accessToken}`
-			}
-		});
+		const response = await postRequest(
+			fetch,
+			MachineEndpoints.assign(data.get('machine')?.toString()),
+			null,
+			session?.accessToken
+		);
 
-		if (response.status !== 200) {
-			const error = await response.json();
-
-			return fail(error.statusCode, { error: error.message });
+		if (response.hasError) {
+			return fail(response.code, { error: response.messages.join(', ') });
 		}
 	},
-	unassign: async ({ request, locals }) => {
+	unassign: async ({ request, locals, fetch }) => {
 		const data = await request.formData();
-		const session = (await locals.getSession()) as AuthSession;
+		const session = (await locals.auth()) as AuthSession;
 
-		await fetch(`http://localhost:5000/api/machines/${data.get('machine')}/unassign-maintainer`, {
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${session?.accessToken}`
-			}
-		});
+		const response = await postRequest(
+			fetch,
+			MachineEndpoints.unassign(data.get('machine')?.toString()),
+			null,
+			session?.accessToken
+		);
+
+		if (response.hasError) {
+			return fail(response.code, { error: response.messages.join(', ') });
+		}
 	}
 };

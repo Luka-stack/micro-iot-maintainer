@@ -1,14 +1,14 @@
-import type { Machine, ModelFilter, Pagination, ProducentFilter, TypeFilter } from '$lib/types';
+import { error } from '@sveltejs/kit';
+import { getRequest } from '$lib/fetch-client';
+import { MachineEndpoints } from '$lib/apis/endpoints';
+
 import type { PageLoad } from './$types';
+import type { Machine, MachineFilters, Pagination } from '$lib/types';
 
 type ReturnData = {
 	machines: Machine[];
 	pagination: Pagination;
-	filters: {
-		producents: ProducentFilter[];
-		types: TypeFilter[];
-		models: ModelFilter[];
-	};
+	filters: MachineFilters;
 };
 
 export const load = (async ({ fetch, data, url }): Promise<ReturnData> => {
@@ -17,17 +17,17 @@ export const load = (async ({ fetch, data, url }): Promise<ReturnData> => {
 	url.searchParams.delete('page');
 	const filters = url.searchParams.toString();
 
-	const response = await fetch(
-		`http://localhost:5000/api/machines?limit=10&offset=${offset}${filters ? `&${filters}` : ''}`,
-		{
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${data.session.accessToken}`
-			}
-		}
+	const response = await getRequest<{ data: Machine[]; meta: Pagination }>(
+		fetch,
+		MachineEndpoints.findMany(offset, filters),
+		data.session.accessToken
 	);
 
-	const machines = await response.json();
+	if (response.hasError) {
+		error(400, { message: response.messages.join(', ') });
+	}
 
-	return { machines: machines.data, pagination: machines.meta, filters: data.filters };
+	const machinesData = response.fetchedData!;
+
+	return { machines: machinesData.data, pagination: machinesData.meta, filters: data.filters };
 }) satisfies PageLoad;

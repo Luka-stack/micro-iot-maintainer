@@ -1,10 +1,18 @@
-import type { AuthSession } from '$lib/auth.types';
-import type { Machine, RepairHistory } from '$lib/types';
 import { error, fail } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
 
-async function loadHistory(serial: string, token: string): Promise<RepairHistory[]> {
-	const response = await fetch(`http://localhost:5000/api/machines/${serial}/history`, {
+import { MachineEndpoints } from '$lib/apis/endpoints';
+import { getRequest, postRequest } from '$lib/fetch-client';
+
+import type { AuthSession } from '$lib/auth.types';
+import type { PageServerLoad } from './$types';
+import type { Machine, RepairHistory } from '$lib/types';
+
+async function loadHistory(
+	fetch: (input: RequestInfo | URL, init?: RequestInit | undefined) => Promise<Response>,
+	serial: string,
+	token: string
+): Promise<RepairHistory[]> {
+	const response = await fetch(MachineEndpoints.history(serial), {
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: `Bearer ${token}`
@@ -19,55 +27,66 @@ async function loadHistory(serial: string, token: string): Promise<RepairHistory
 	return history.data;
 }
 
-export const load = (async ({ params, locals }): Promise<{ machine: Machine; history: Promise<RepairHistory[]> }> => {
+export const load = (async ({
+	fetch,
+	params,
+	locals
+}): Promise<{ machine: Machine; history: Promise<RepairHistory[]> }> => {
 	const session = (await locals.auth()) as AuthSession | null;
 
-	const history = loadHistory(params.serial, session?.accessToken ?? '');
+	const history = loadHistory(fetch, params.serial, session?.accessToken ?? '');
 
-	const response = await fetch(`http://localhost:5000/api/machines/${params.serial}`, {
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${session?.accessToken}`
+	const machine = await getRequest<{ data: Machine }>(
+		fetch,
+		MachineEndpoints.findOne(params.serial),
+		session?.accessToken
+	);
+
+	if (machine.hasError) {
+		if (machine.code === 404 || machine.code === 401) {
+			error(404, 'Not found');
+		} else {
+			error(500, 'Failed to fetch machine');
 		}
-	});
-
-	if (response.status === 404 || response.status === 401) {
-		error(404, 'Not found');
 	}
 
-	if (!response.ok) {
-		error(500, 'Failed to fetch machine');
-	}
-
-	const machine = await response.json();
-
-	return { machine: machine.data, history };
+	return { machine: machine.fetchedData!.data, history };
 }) satisfies PageServerLoad;
 
 export const actions = {
-	assign: async ({ request, locals }) => {
+	assign: async ({ fetch, request, locals }) => {
 		const data = await request.formData();
 		const session = (await locals.auth()) as AuthSession;
 
-		await fetch(`http://localhost:5000/api/machines/${data.get('machine')}/assign-maintainer`, {
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${session?.accessToken}`
-			}
-		});
+		const response = await postRequest(
+			fetch,
+			MachineEndpoints.assign(data.get('machine')?.toString()),
+			null,
+			session?.accessToken
+		);
+
+		if (response.hasError) {
+			fail(response.code, { error: response.messages });
+		}
 	},
-	unassign: async ({ request, locals }) => {
+
+	unassign: async ({ fetch, request, locals }) => {
 		const data = await request.formData();
 		const session = (await locals.auth()) as AuthSession;
 
-		await fetch(`http://localhost:5000/api/machines/${data.get('machine')}/unassign-maintainer`, {
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${session?.accessToken}`
-			}
-		});
+		const response = await postRequest(
+			fetch,
+			MachineEndpoints.unassign(data.get('machine')?.toString()),
+			null,
+			session?.accessToken
+		);
+
+		if (response.hasError) {
+			fail(response.code, { error: response.messages });
+		}
 	},
-	report: async ({ request, locals }) => {
+
+	report: async ({ fetch, request, locals }) => {
 		const [data, session] = await Promise.all([request.formData(), locals.auth() as AuthSession]);
 		const next = data.get('nextMaintenance') ?? '';
 		const desc = data.get('description') ?? '';
@@ -93,25 +112,19 @@ export const actions = {
 			return fail(422, errors);
 		}
 
-		try {
-			const response = await fetch(`http://localhost:5000/api/machines/${data.get('machine')}/report-maintenance`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${session?.accessToken}`
-				},
-				body: JSON.stringify({
-					description: desc,
-					nextMaintenance: next,
-					defects
-				})
-			});
+		const response = await postRequest(
+			fetch,
+			MachineEndpoints.report(data.get('machine')?.toString()),
+			{
+				description: desc,
+				nextMaintenance: next,
+				defects
+			},
+			session?.accessToken
+		);
 
-			const json = await response.json();
-
-			console.log(json);
-		} catch (err) {
-			console.log(err);
+		if (response.hasError) {
+			fail(response.code, { error: response.messages });
 		}
 	}
 };

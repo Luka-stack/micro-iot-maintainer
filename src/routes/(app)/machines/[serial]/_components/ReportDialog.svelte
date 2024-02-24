@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { CheckSquare, Square } from 'lucide-svelte';
+	import { toast } from 'svelte-sonner';
 
 	export let errors: Record<string, { value: string; error: string }> | null;
 	export let dialog: HTMLDialogElement;
@@ -90,6 +91,9 @@
 						dialog.close();
 						selectedDefects = new Map();
 						selectedTab = 1;
+						toast.success('Work reported successfully');
+					} else {
+						toast.error('An error occurred while reporting work');
 					}
 				};
 			}}

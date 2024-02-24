@@ -28,8 +28,6 @@ export type Machine = {
 	// TODO Don't send to to maintainer
 	// assignedEmployee: string;
 
-	// maintenances: RepairHistory[] | null;
-
 	assignedMaintainer: string | null;
 
 	lastStatusUpdate: string;
@@ -51,6 +49,12 @@ export type Pagination = {
 	offset: number;
 	limit: number;
 	total: number;
+};
+
+export type MachineFilters = {
+	producents: ProducentFilter[];
+	types: TypeFilter[];
+	models: ModelFilter[];
 };
 
 export type ProducentFilter = {

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { toast } from 'svelte-sonner';
 	import { enhance } from '$app/forms';
 
 	export let dialog: HTMLDialogElement;
@@ -22,7 +23,14 @@
 				method="post"
 				action="?/unassign"
 				use:enhance={() => {
-					return async ({ update }) => {
+					return async ({ result, update }) => {
+						if (result.status && result.status >= 400) {
+							// @ts-ignore
+							toast.error(result.data.error);
+						} else {
+							toast.success('Machine unassigned successfully!');
+						}
+
 						await update();
 						dialog.close();
 					};

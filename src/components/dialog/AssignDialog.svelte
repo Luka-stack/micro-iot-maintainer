@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { toast } from 'svelte-sonner';
 	import { Diamond } from 'lucide-svelte';
 	import { enhance } from '$app/forms';
-	import { toast } from 'svelte-sonner';
 
 	export let dialog: HTMLDialogElement;
 	export let serialNumber: string | undefined;
@@ -42,13 +42,14 @@
 				action="?/assign"
 				use:enhance={() => {
 					return async ({ result, update }) => {
-						await update();
-
-						if (result.status !== 200) {
+						if (result.status && result.status >= 400) {
 							// @ts-ignore
 							toast.error(result.data.error);
+						} else {
+							toast.success('Machine assigned successfully!');
 						}
 
+						await update();
 						dialog.close();
 					};
 				}}
